@@ -3,11 +3,11 @@
 use crate::config::Config;
 use crate::fl;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
-use cosmic::iced::{window::Id, Limits, Subscription};
-use cosmic::iced_winit::commands::popup::{destroy_popup, get_popup};
+use cosmic::iced::platform_specific::shell::wayland::commands::popup::{destroy_popup, get_popup};
+use cosmic::iced::{futures, window::Id, Limits, Subscription};
 use cosmic::prelude::*;
 use cosmic::widget;
-use futures_util::SinkExt;
+use futures::SinkExt;
 
 /// The application model stores app-specific state used to describe its interface and
 /// drive its logic.
@@ -102,13 +102,10 @@ impl cosmic::Application for AppModel {
     /// multiple poups, you may match the id parameter to determine which popup to
     /// create a view for.
     fn view_window(&self, _id: Id) -> Element<'_, Self::Message> {
-        let content_list = widget::list_column()
-            .padding(5)
-            .spacing(0)
-            .add(widget::settings::item(
-                fl!("example-row"),
-                widget::toggler(self.example_row).on_toggle(Message::ToggleExampleRow),
-            ));
+        let content_list = widget::list_column().add(widget::settings::item(
+            fl!("example-row"),
+            widget::toggler(self.example_row).on_toggle(Message::ToggleExampleRow),
+        ));
 
         self.core.applet.popup_container(content_list).into()
     }
@@ -124,14 +121,13 @@ impl cosmic::Application for AppModel {
 
         Subscription::batch(vec![
             // Create a subscription which emits updates through a channel.
-            Subscription::run_with_id(
-                std::any::TypeId::of::<MySubscription>(),
-                cosmic::iced::stream::channel(4, move |mut channel| async move {
+            Subscription::run(|| {
+                cosmic::iced::stream::channel(4, move |mut channel: futures::channel::mpsc::Sender<_>| async move {
                     _ = channel.send(Message::SubscriptionChannel).await;
 
-                    futures_util::future::pending().await
-                }),
-            ),
+                    futures::future::pending().await
+                })
+            }),
             // Watch for application configuration changes.
             self.core()
                 .watch_config::<Config>(Self::APP_ID)
@@ -189,7 +185,7 @@ impl cosmic::Application for AppModel {
         Task::none()
     }
 
-    fn style(&self) -> Option<cosmic::iced_runtime::Appearance> {
+    fn style(&self) -> Option<cosmic::iced::theme::Style> {
         Some(cosmic::applet::style())
     }
 }
