@@ -1,14 +1,15 @@
 [Desktop Entry]
-Name={{ project-name | title_case }}
-Comment={{ description }}
+Name=Calenderdot
+Comment=A comic-style calendar applet for the COSMIC desktop
 Type=Application
-Icon={{ appid }}
-Exec={{ project-name }} %F
+Icon=com.cosmic.calenderdot
+Exec=cosmic-calenderdot %F
 Terminal=false
 StartupNotify=true
-Categories=COSMIC
-Keywords=COSMIC
-NoDisplay=true
+Categories=COSMIC;
+Keywords=COSMIC;Calendar;Applet;
 X-CosmicApplet=true
+X-CosmicShrinkable=true
 X-CosmicHoverPopup=Auto
+X-OverflowPriority=10
 MimeType=

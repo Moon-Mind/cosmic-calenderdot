@@ -1,16 +1,16 @@
-// SPDX-License-Identifier: {{ license }}
-
 mod app;
+mod calendar;
 mod config;
 mod i18n;
 
 fn main() -> cosmic::iced::Result {
-    // Get the system's preferred languages.
+    tracing_subscriber::fmt::init();
+
     let requested_languages = i18n_embed::DesktopLanguageRequester::requested_languages();
 
-    // Enable localizations to be applied.
     i18n::init(&requested_languages);
 
-    // Starts the applet's event loop with `()` as the application's flags.
+    tracing::info!("Starting cosmic-calenderdot");
+
     cosmic::applet::run::<app::AppModel>(())
 }

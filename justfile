@@ -1,64 +1,64 @@
-name := '{{ project-name }}'
-appid := '{{ appid }}'
-{% raw %}
-rootdir := ''
-prefix := '/usr'
+name := 'cosmic-calenderdot'
+appid := 'com.cosmic.calenderdot'
+rootdir := env('DESTDIR', '')
+prefix := env('PREFIX', '/usr')
 
 # Installation paths
 base-dir := absolute_path(clean(rootdir / prefix))
 cargo-target-dir := env('CARGO_TARGET_DIR', 'target')
-appdata-dst := base-dir / 'share' / 'appdata' / appid + '.metainfo.xml'
+metainfo-dst := base-dir / 'share' / 'metainfo' / appid + '.metainfo.xml'
 bin-dst := base-dir / 'bin' / name
 desktop-dst := base-dir / 'share' / 'applications' / appid + '.desktop'
 icon-dst := base-dir / 'share' / 'icons' / 'hicolor' / 'scalable' / 'apps' / appid + '.svg'
 
-# Default recipe which runs `just build-release`
-default: build-release
+# Compile release build
+build *args:
+    cargo build --release {{args}}
 
-# Runs `cargo clean`
-clean:
-    cargo clean
-
-# Removes vendored dependencies
-clean-vendor:
-    rm -rf .cargo vendor vendor.tar
-
-# `cargo clean` and removes vendored dependencies
-clean-dist: clean clean-vendor
-
-# Compiles with debug profile
+# Compile debug build
 build-debug *args:
     cargo build {{args}}
 
-# Compiles with release profile
-build-release *args: (build-debug '--release' args)
+# Compile release build (alias)
+build-release: build
 
-# Compiles release profile with vendored dependencies
-build-vendored *args: vendor-extract (build-release '--frozen --offline' args)
+# Compile release with vendored deps
+build-vendored *args: vendor-extract (build '--frozen --offline' args)
 
-# Runs a clippy check
+# Run clippy
 check *args:
     cargo clippy --all-features {{args}} -- -W clippy::pedantic
 
-# Runs a clippy check with JSON message format
 check-json: (check '--message-format=json')
 
-# Run the application for testing purposes
+# Clean build artifacts
+clean:
+    cargo clean
+
+clean-vendor:
+    rm -rf .cargo vendor vendor.tar
+
+clean-dist: clean clean-vendor
+
+# Default: build
+default: build
+
+# Run the app
 run *args:
     env RUST_BACKTRACE=full cargo run --release {{args}}
 
-# Installs files
+# Install files
 install:
     install -Dm0755 {{ cargo-target-dir / 'release' / name }} {{bin-dst}}
     install -Dm0644 resources/app.desktop {{desktop-dst}}
-    install -Dm0644 resources/app.metainfo.xml {{appdata-dst}}
+    install -Dm0644 resources/app.metainfo.xml {{metainfo-dst}}
     install -Dm0644 resources/icon.svg {{icon-dst}}
 
-# Uninstalls installed files
+# Uninstall files
 uninstall:
-    rm {{bin-dst}} {{desktop-dst}} {{icon-dst}}
+    rm -f {{bin-dst}} {{desktop-dst}} {{icon-dst}}
 
-# Vendor dependencies locally
+# Vendor dependencies
 vendor:
     mkdir -p .cargo
     cargo vendor --sync Cargo.toml | head -n -1 > .cargo/config.toml
@@ -66,12 +66,11 @@ vendor:
     echo >> .cargo/config.toml
     rm -rf .cargo vendor
 
-# Extracts vendored dependencies
 vendor-extract:
     rm -rf vendor
     tar pxf vendor.tar
 
-# Bump cargo version, create git commit, and create tag
+# Bump version, commit, tag
 tag version:
     find -type f -name Cargo.toml -exec sed -i '0,/^version/s/^version.*/version = "{{version}}"/' '{}' \; -exec git add '{}' \;
     cargo check
@@ -79,4 +78,3 @@ tag version:
     git add Cargo.lock
     git commit -m 'release: {{version}}'
     git tag -a {{version}} -m ''
-{% endraw %}

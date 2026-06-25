@@ -1,31 +1,68 @@
-# COSMIC Applet Template
+# COSMIC Calenderdot
 
-A template for developing applets for the COSMIC™ desktop environment using [libcosmic][libcosmic].
+A comic-style calendar applet for the COSMIC desktop, inspired by Dot.
 
-## Getting Started
+## Features
 
-To create an applet with this template, [install `cargo generate`][cargo-generate] and run:
+- **Day badge** — panel button shows the current day number
+- **Greeting** — time-based greeting with your username
+- **Daily summary** — event count and total focus time
+- **Monthly calendar grid** — day-of-week headers, event dots, today highlight
+- **Today's agenda** — event cards with time badges, location chips, comic styling
+- **Tomorrow preview** — upcoming events for the next day
+- **World clock** — current time in NYC, BHO (Kolkata), and LDN
+- **ICS support** — reads `.ics` calendar files from standard directories; falls back to demo events
+
+## Build
 
 ```sh
-cargo generate gh:pop-os/cosmic-applet-template
+just build
 ```
 
-A [justfile](./justfile) is included by default with common recipes used by other COSMIC projects. Install from [casey/just][just]
+## Install
 
-- `just` builds the applet with the default `just build-release` recipe
-- `just run` builds and runs the applet
-- `just install` installs the project into the system
-- `just vendor` creates a vendored tarball
-- `just build-vendored` compiles with vendored dependencies from that tarball
-- `just check` runs clippy on the project to check for linter warnings
-- `just check-json` can be used by IDEs that support LSP
+System-wide (requires `sudo`):
 
-## Documentation
+```sh
+sudo just install
+```
 
-Refer to the [libcosmic API documentation][api-docs] and [book][book] for help with building applets with [libcosmic][libcosmic].
+User-local:
 
-[api-docs]: https://pop-os.github.io/libcosmic/cosmic/
-[book]: https://pop-os.github.io/libcosmic-book/
-[cargo-generate]: https://cargo-generate.github.io/cargo-generate/installation.html
-[libcosmic]: https://github.com/pop-os/libcosmic/
-[just]: https://github.com/casey/just
+```sh
+PREFIX=$HOME/.local just install
+```
+
+## Add to Panel
+
+1. Right-click the COSMIC panel → **Panel Settings**
+2. Click **Add Applet** in the panel you want to modify
+3. Search for **Calenderdot** and click **Add**
+
+The day-number badge will appear in the panel. Click it to open the popover.
+
+If the applet doesn't appear in the list, try restarting the panel:
+
+```sh
+killall cosmic-panel
+```
+
+Or log out and back in. Verify the desktop file is installed:
+
+```sh
+ls -la /usr/share/applications/com.cosmic.calenderdot.desktop
+ls -la /usr/bin/cosmic-calenderdot
+```
+
+## Uninstall
+
+```sh
+sudo just uninstall
+```
+
+### Dependencies
+
+- [just](https://github.com/casey/just) — command runner
+- Rust 2021 edition
+- libcosmic (fetched from git during build)
+- Standard COSMIC desktop libraries

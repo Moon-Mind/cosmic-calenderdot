@@ -1,7 +1,6 @@
-app-title = {{ project-name | title_case }}
+app-title = Calenderdot
 about = About
-view = View
-welcome = Welcome to COSMIC! ✨
-page-id = Page { $num }
-git-description = Git commit {$hash} on {$date}
-example-row = Example Row
+today-header = Today's Events
+no-events = Nothing on the horizon!
+take-break = Take a break, hero.
+refresh = Refresh

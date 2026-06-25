@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>{{ appid }}</id>
+  <id>com.cosmic.calenderdot</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>{{ license }}</project_license>
-  <name>{{ project-name | title_case }}</name>
-  <summary>{{ description }}</summary>
-  <icon type="remote" width="64" height="64" scale="1">
-    {{ repository-url }}/raw/main/resources/icons/hicolor/scalable/apps/icon.svg
-  </icon>
-  <url type="vcs-browser">{{ repository-url }}</url>
-  <launchable type="desktop-id">{{ appid }}.desktop</launchable>
+  <project_license>MIT</project_license>
+  <name>Calenderdot</name>
+  <summary>A comic-style calendar applet for the COSMIC desktop</summary>
+  <launchable type="desktop-id">com.cosmic.calenderdot.desktop</launchable>
   <provides>
     <id>com.system76.CosmicApplet</id>
     <binaries>
-      <binary>{{ project-name }}</binary>
+      <binary>cosmic-calenderdot</binary>
     </binaries>
   </provides>
   <requires>

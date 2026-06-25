@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"/>
+<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="18" width="104" height="98" rx="8" fill="#E82820" stroke="#111" stroke-width="3"/>
+  <rect x="12" y="46" width="104" height="70" rx="4" fill="#FFF" stroke="#111" stroke-width="2"/>
+  <line x1="12" y1="58" x2="116" y2="58" stroke="#111" stroke-width="1.5"/>
+  <text x="64" y="39" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFF" font-family="sans-serif">JUN</text>
+  <text x="64" y="88" text-anchor="middle" font-size="28" font-weight="bold" fill="#111" font-family="sans-serif">25</text>
+  <circle cx="28" cy="64" r="3" fill="#E82820"/>
+  <circle cx="44" cy="64" r="3" fill="#1A3FD5"/>
+  <circle cx="60" cy="64" r="3" fill="#FFEE44"/>
+</svg>
