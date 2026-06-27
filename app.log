@@ -1,0 +1,134 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running `target/debug/cosmic-calenderdot`
+[2m2026-06-27T11:13:29.196912Z[0m [32m INFO[0m [2mi18n_embed::requester[0m[2m:[0m Current Locale: [LanguageIdentifier { language: Language(Some("de")), script: None, region: Some(Region("DE")), variants: None }]
+[2m2026-06-27T11:13:29.197043Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Attempting to load language file: "en/cosmic_calenderdot.ftl"
+[2m2026-06-27T11:13:29.197202Z[0m [34mDEBUG[0m [2mi18n_embed::fluent[0m[2m:[0m Loaded language file: "en/cosmic_calenderdot.ftl" for language: "en"
+[2m2026-06-27T11:13:29.197303Z[0m [32m INFO[0m [2mi18n_embed[0m[2m:[0m Selecting translations for domain "cosmic_calenderdot"
+[2m2026-06-27T11:13:29.197428Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Searching for available languages, found language file: "en/cosmic_calenderdot.ftl"
+[2m2026-06-27T11:13:29.197495Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Requested Languages: [LanguageIdentifier { language: Language(Some("de")), script: None, region: Some(Region("DE")), variants: None }]
+[2m2026-06-27T11:13:29.197514Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Available Languages: [LanguageIdentifier { language: Language(Some("en")), script: None, region: None, variants: None }]
+[2m2026-06-27T11:13:29.197526Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Supported Languages: [LanguageIdentifier { language: Language(Some("en")), script: None, region: None, variants: None }]
+[2m2026-06-27T11:13:29.197543Z[0m [34mDEBUG[0m [2mi18n_embed[0m[2m:[0m Attempting to load language file: "en/cosmic_calenderdot.ftl"
+[2m2026-06-27T11:13:29.197586Z[0m [34mDEBUG[0m [2mi18n_embed::fluent[0m[2m:[0m Loaded language file: "en/cosmic_calenderdot.ftl" for language: "en"
+[2m2026-06-27T11:13:29.197655Z[0m [32m INFO[0m [2mcosmic_calenderdot[0m[2m:[0m Starting cosmic-calenderdot
+[2m2026-06-27T11:13:29.197748Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.197939Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.198112Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.202399Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.202559Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.206412Z[0m [34mDEBUG[0m [2mcosmic_text::font::system[0m[2m:[0m Locale: de-DE
+[2m2026-06-27T11:13:29.271348Z[0m [34mDEBUG[0m [2mcosmic_text::font::system[0m[2m:[0m Parsed 627 font faces in 64ms.
+[2m2026-06-27T11:13:29.273288Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.274790Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m Bound new global [57] wl_output v4
+[2m2026-06-27T11:13:29.274844Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m Bound new global [7] zxdg_output_manager_v1 v3
+[2m2026-06-27T11:13:29.274916Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m Bound new global [58] wl_seat v9
+[2m2026-06-27T11:13:29.277671Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m Bound new global [19] wp_cursor_shape_manager_v1 v2
+[2m2026-06-27T11:13:29.277808Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m supported wl_shm format Argb8888
+[2m2026-06-27T11:13:29.277843Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m supported wl_shm format Xbgr8888
+[2m2026-06-27T11:13:29.277863Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m supported wl_shm format Abgr8888
+[2m2026-06-27T11:13:29.277893Z[0m [34mDEBUG[0m [1mwinit::EventLoopBuilder::build[0m[2m:[0m [2msctk[0m[2m:[0m supported wl_shm format Xrgb8888
+[2m2026-06-27T11:13:29.279838Z[0m [32m INFO[0m [2mcosmic_calenderdot::app[0m[2m:[0m AppModel::init called
+[2m2026-06-27T11:13:29.280195Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280273Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280721Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280743Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280761Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280791Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.280798Z[0m [32m INFO[0m [2miced_winit[0m[2m:[0m System theme: None
+[2m2026-06-27T11:13:29.280955Z[0m [32m INFO[0m [2miced_winit[0m[2m:[0m Window attributes for id `Id(
+    1,
+)`: WindowAttributes {
+    surface_size: Some(
+        Logical(
+            LogicalSize {
+                width: 48.0,
+                height: 40.0,
+            },
+        ),
+    ),
+    min_surface_size: Some(
+        Logical(
+            LogicalSize {
+                width: 48.0,
+                height: 40.0,
+            },
+        ),
+    ),
+    max_surface_size: None,
+    surface_resize_increments: None,
+    position: None,
+    resizable: false,
+    enabled_buttons: WindowButtons(
+        CLOSE | MINIMIZE,
+    ),
+    title: "Cosmic - Iced",
+    maximized: false,
+    visible: false,
+    transparent: true,
+    blur: false,
+    decorations: false,
+    window_icon: None,
+    preferred_theme: None,
+    content_protected: false,
+    window_level: Normal,
+    active: true,
+    cursor: Icon(
+        Default,
+    ),
+    parent_window: None,
+    fullscreen: None,
+    platform: Some(
+        WindowAttributesWayland {
+            name: Some(
+                ApplicationName {
+                    general: "com.cosmic.calenderdot",
+                    instance: "com.cosmic.calenderdot",
+                },
+            ),
+            activation_token: None,
+            prefer_csd: false,
+        },
+    ),
+}
+[2m2026-06-27T11:13:29.281148Z[0m [33m WARN[0m [2mwinit_wayland::window::state[0m[2m:[0m `xdg_toplevel_icon_manager_v1` is not supported
+[2m2026-06-27T11:13:29.281543Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [58] wl_seat v9
+[2m2026-06-27T11:13:29.281597Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [57] wl_output v4
+[2m2026-06-27T11:13:29.281619Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [7] zxdg_output_manager_v1 v3
+[2m2026-06-27T11:13:29.281691Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [58] wl_seat v9
+[2m2026-06-27T11:13:29.281729Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [47] ext_foreign_toplevel_list_v1 v1
+[2m2026-06-27T11:13:29.281749Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [46] zcosmic_toplevel_info_v1 v3
+[2m2026-06-27T11:13:29.281764Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [3] cosmic_corner_radius_manager_v1 v1
+[2m2026-06-27T11:13:29.281781Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [48] zcosmic_toplevel_manager_v1 v4
+[2m2026-06-27T11:13:29.281801Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [6] zwp_keyboard_shortcuts_inhibit_manager_v1 v1
+[2m2026-06-27T11:13:29.281831Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [32] zwp_text_input_manager_v3 v1
+[2m2026-06-27T11:13:29.281862Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [1] wl_compositor v5
+[2m2026-06-27T11:13:29.281880Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [2] wl_subcompositor v1
+[2m2026-06-27T11:13:29.282056Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [20] wp_viewporter v1
+[2m2026-06-27T11:13:29.282117Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [18] wl_shm v1
+[2m2026-06-27T11:13:29.282155Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [53] zwp_linux_dmabuf_v1 v4
+[2m2026-06-27T11:13:29.282188Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [34] wp_alpha_modifier_v1 v1
+[2m2026-06-27T11:13:29.282213Z[0m [32m INFO[0m [2miced_winit::platform_specific::wayland::event_loop[0m[2m:[0m SCTK setup complete.
+[2m2026-06-27T11:13:29.286379Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [19] wp_cursor_shape_manager_v1 v2
+[2m2026-06-27T11:13:29.286519Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Argb8888
+[2m2026-06-27T11:13:29.286539Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xbgr8888
+[2m2026-06-27T11:13:29.286552Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Abgr8888
+[2m2026-06-27T11:13:29.286564Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xrgb8888
+[2m2026-06-27T11:13:29.286652Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Argb8888
+[2m2026-06-27T11:13:29.286669Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xbgr8888
+[2m2026-06-27T11:13:29.286677Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Abgr8888
+[2m2026-06-27T11:13:29.286687Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xrgb8888
+[2m2026-06-27T11:13:29.308328Z[0m [34mDEBUG[0m [2mcosmic_text::font::system[0m[2m:[0m font matches for Attrs { color_opt: None, family: SansSerif, stretch: Normal, style: Normal, weight: Weight(400), metadata: 0, cache_key_flags: CacheKeyFlags(0x0), metrics_opt: None, letter_spacing_opt: None, font_features: FontFeatures { features: [] }, text_decoration: TextDecoration { underline: None, underline_color_opt: None, strikethrough: false, strikethrough_color_opt: None, overline: false, overline_color_opt: None } } in 6.012755ms
+[2m2026-06-27T11:13:29.319697Z[0m [34mDEBUG[0m [2mcosmic_text::font::system[0m[2m:[0m font matches for Attrs { color_opt: None, family: Name("Open Sans"), stretch: Normal, style: Normal, weight: Weight(700), metadata: 0, cache_key_flags: CacheKeyFlags(0x0), metrics_opt: None, letter_spacing_opt: None, font_features: FontFeatures { features: [] }, text_decoration: TextDecoration { underline: None, underline_color_opt: None, strikethrough: false, strikethrough_color_opt: None, overline: false, overline_color_opt: None } } in 8.751191ms
+[2m2026-06-27T11:13:29.328162Z[0m [34mDEBUG[0m [2mcosmic_text::font::system[0m[2m:[0m font matches for Attrs { color_opt: None, family: Name("Open Sans"), stretch: Normal, style: Normal, weight: Weight(400), metadata: 0, cache_key_flags: CacheKeyFlags(0x0), metrics_opt: None, letter_spacing_opt: None, font_features: FontFeatures { features: [] }, text_decoration: TextDecoration { underline: None, underline_color_opt: None, strikethrough: false, strikethrough_color_opt: None, overline: false, overline_color_opt: None } } in 6.012925ms
+[2m2026-06-27T11:13:29.328731Z[0m [32m INFO[0m [2mcosmic_calenderdot::app[0m[2m:[0m AppModel::update called with: Token(Init(Sender { sender: Sender { .. }, ping: PingOnDrop(Ping { event: FlagOnDrop(OwnedFd { fd: 17 }) }) }))
+[2m2026-06-27T11:13:29.328768Z[0m [32m INFO[0m [2mcosmic_calenderdot::app[0m[2m:[0m Token update: Init(Sender { sender: Sender { .. }, ping: PingOnDrop(Ping { event: FlagOnDrop(OwnedFd { fd: 17 }) }) })
+[2m2026-06-27T11:13:29.329024Z[0m [34mDEBUG[0m [2mcosmic_config[0m[2m:[0m Using standard config dir: Some("/home/moonmind/.config")
+[2m2026-06-27T11:13:29.329218Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [57] wl_output v4
+[2m2026-06-27T11:13:29.329256Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [7] zxdg_output_manager_v1 v3
+[2m2026-06-27T11:13:29.329312Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m Bound new global [58] wl_seat v9
+[2m2026-06-27T11:13:29.329687Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Argb8888
+[2m2026-06-27T11:13:29.329719Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xbgr8888
+[2m2026-06-27T11:13:29.329731Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Abgr8888
+[2m2026-06-27T11:13:29.329742Z[0m [34mDEBUG[0m [2msctk[0m[2m:[0m supported wl_shm format Xrgb8888
+[2m2026-06-27T11:13:29.333124Z[0m [32m INFO[0m [2mcosmic_calenderdot::app[0m[2m:[0m AppModel::update called with: UpdateConfig(Config { calendar_dir: "" })
+[2m2026-06-27T11:13:29.353418Z[0m [32m INFO[0m [2mcosmic::app::cosmic[0m[2m:[0m Suggested bounds: Some(Size { width: 1536.0, height: 848.0 })
