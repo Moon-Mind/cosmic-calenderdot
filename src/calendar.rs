@@ -1,4 +1,4 @@
-use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, Weekday};
+use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, Timelike, Weekday};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -91,12 +91,10 @@ fn generate_month_events(year: i32, month: u32) -> Vec<CalendarEvent> {
     events
 }
 
-pub fn get_month_calendar() -> MonthCalendar {
+pub fn get_month_calendar_for(year: i32, month: u32) -> MonthCalendar {
     let today = Local::now().date_naive();
-    let year = today.year();
-    let month = today.month();
     let first_day = NaiveDate::from_ymd_opt(year, month, 1).unwrap();
-    let first_weekday = first_day.weekday().num_days_from_monday() as usize;
+    let first_weekday = first_day.weekday().num_days_from_sunday() as usize;
     let days_in_month = num_days_in_month(year, month);
     let month_events = generate_month_events(year, month);
 
@@ -235,19 +233,60 @@ fn parse_ics_events(content: &str) -> Vec<CalendarEvent> {
 fn demo_events(date: NaiveDate) -> Vec<CalendarEvent> {
     let weekday = date.weekday();
     let day_of_month = date.day();
+    let now_hour = Local::now().hour();
 
     let mut events = vec![
         CalendarEvent {
-            summary: "Morning Standup".into(),
-            start_time: Some(date.and_hms_opt(10, 0, 0).unwrap()),
-            end_time: Some(date.and_hms_opt(10, 15, 0).unwrap()),
+            summary: "Launch day! \u{1f680}".into(),
+            start_time: None,
+            end_time: None,
+            location: None,
+            description: Some("Major product launch event".into()),
+        },
+        CalendarEvent {
+            summary: "Product Review".into(),
+            start_time: Some(
+                date.and_hms_opt(
+                    (now_hour + 7) % 24,
+                    15,
+                    0,
+                )
+                .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt(
+                    (now_hour + 8) % 24,
+                    30,
+                    0,
+                )
+                .unwrap(),
+            ),
+            location: Some("Figma — Mobile Redesign".into()),
+            description: Some("Review latest mockups and Figma designs".into()),
+        },
+        CalendarEvent {
+            summary: "Design Sprint".into(),
+            start_time: Some(
+                date.and_hms_opt((now_hour + 2) % 24, 0, 0)
+                    .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt((now_hour + 3) % 24, 0, 0)
+                    .unwrap(),
+            ),
             location: Some("Meeting Room A".into()),
-            description: Some("Daily team sync".into()),
+            description: Some("Daily team sync via Google Meet".into()),
         },
         CalendarEvent {
             summary: "Lunch Break \u{1f355}".into(),
-            start_time: Some(date.and_hms_opt(12, 0, 0).unwrap()),
-            end_time: Some(date.and_hms_opt(13, 0, 0).unwrap()),
+            start_time: Some(
+                date.and_hms_opt((now_hour + 4) % 24, 0, 0)
+                    .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt((now_hour + 5) % 24, 0, 0)
+                    .unwrap(),
+            ),
             location: None,
             description: None,
         },
@@ -258,16 +297,28 @@ fn demo_events(date: NaiveDate) -> Vec<CalendarEvent> {
     {
         events.push(CalendarEvent {
             summary: "Sprint Planning".into(),
-            start_time: Some(date.and_hms_opt(14, 0, 0).unwrap()),
-            end_time: Some(date.and_hms_opt(15, 30, 0).unwrap()),
-            location: Some("War Room".into()),
+            start_time: Some(
+                date.and_hms_opt((now_hour + 9) % 24, 0, 0)
+                    .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt((now_hour + 10) % 24, 30, 0)
+                    .unwrap(),
+            ),
+            location: Some("Google Docs — Sprint Notes".into()),
             description: Some("Plan the next sprint".into()),
         });
     } else {
         events.push(CalendarEvent {
             summary: "Design Review".into(),
-            start_time: Some(date.and_hms_opt(15, 0, 0).unwrap()),
-            end_time: Some(date.and_hms_opt(16, 0, 0).unwrap()),
+            start_time: Some(
+                date.and_hms_opt((now_hour + 9) % 24, 0, 0)
+                    .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt((now_hour + 10) % 24, 0, 0)
+                    .unwrap(),
+            ),
             location: Some("Zoom".into()),
             description: Some("Review latest mockups".into()),
         });
@@ -276,8 +327,14 @@ fn demo_events(date: NaiveDate) -> Vec<CalendarEvent> {
     if day_of_month % 5 == 0 {
         events.push(CalendarEvent {
             summary: "All-Hands Meeting".into(),
-            start_time: Some(date.and_hms_opt(16, 0, 0).unwrap()),
-            end_time: Some(date.and_hms_opt(17, 0, 0).unwrap()),
+            start_time: Some(
+                date.and_hms_opt((now_hour + 11) % 24, 0, 0)
+                    .unwrap(),
+            ),
+            end_time: Some(
+                date.and_hms_opt((now_hour + 12) % 24, 0, 0)
+                    .unwrap(),
+            ),
             location: Some("Main Auditorium".into()),
             description: Some("Monthly all-hands".into()),
         });
