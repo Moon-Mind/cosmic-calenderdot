@@ -19,12 +19,9 @@ mod comic {
 
     pub const PAPER: Color = Color::from_rgb(0.96, 0.94, 0.88);
     pub const OUTLINE: Color = Color::from_rgb(0.06, 0.06, 0.06);
-
     pub const ACCENT_YELLOW: Color = Color::from_rgb(1.0, 0.93, 0.27);
     pub const ACCENT_RED: Color = Color::from_rgb(0.91, 0.16, 0.13);
     pub const ACCENT_BLUE: Color = Color::from_rgb(0.06, 0.25, 0.84);
-
-    pub const TIME_COLOR: Color = ACCENT_RED;
     pub const BADGE_TEXT: Color = Color::from_rgb(1.0, 1.0, 1.0);
     pub const HEADER_BG: Color = ACCENT_YELLOW;
     pub const HEADER_TEXT: Color = Color::from_rgb(0.06, 0.06, 0.06);
@@ -33,6 +30,7 @@ mod comic {
     pub const EMPTY_TEXT: Color = Color::from_rgb(0.5, 0.5, 0.5);
     pub const SECTION_TEXT: Color = Color::from_rgb(0.4, 0.4, 0.4);
     pub const GRID_HEADER: Color = Color::from_rgb(0.5, 0.5, 0.5);
+    pub const TIME_COLOR: Color = ACCENT_RED;
 }
 
 #[derive(Default)]
@@ -122,11 +120,12 @@ impl cosmic::Application for AppModel {
         let day_str = now.format("%d").to_string();
 
         let clock = column([
-            text::title3(time_str)
+            text::body(time_str)
+                .size(14)
                 .class(cosmic::theme::Text::Color(comic::BADGE_TEXT))
                 .into(),
             text::caption(day_str)
-                .size(10)
+                .size(8)
                 .class(cosmic::theme::Text::Color(comic::BADGE_TEXT))
                 .into(),
         ])
