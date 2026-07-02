@@ -1,27 +1,25 @@
 # COSMIC Calenderdot
 
-A comic-style calendar applet for the COSMIC desktop, inspired by Dot.
+A calendar applet for the COSMIC desktop with an EDS (Evolution Data Server) backend.
 
 ## Features
 
-- **Day badge** — panel button shows the current day number
-- **Greeting** — time-based greeting with your username
-- **Daily summary** — event count and total focus time
-- **Monthly calendar grid** — day-of-week headers, event dots, today highlight
-- **Today's agenda** — event cards with time badges, location chips, comic styling
-- **Tomorrow preview** — upcoming events for the next day
-- **World clock** — current time in NYC, BHO (Kolkata), and LDN
-- **ICS support** — reads `.ics` calendar files from standard directories; falls back to demo events
+- **Panel clock** — shows `%d.%m., %H:%M` in the panel
+- **Monthly calendar grid** — day-of-week headers, today highlight, navigation
+- **Event agenda** — day-grouped event list with color-coded dots per calendar
+- **Toolbar** — create, notifications, view toggle, settings buttons
+- **EDS backend** — reads calendar events from Evolution Data Server's SQLite cache
+- **Color-coded calendars** — each EDS calendar source gets a stable color from its cache directory hash
+- **Live refresh** — detects `cache.db` file changes and reloads events immediately
+- **Dark theme** — uses COSMIC dark palette (#121214 background, #52CAD7 accent)
 
 ## Build
 
 ```sh
-just build
+cargo build
 ```
 
 ## Install
-
-System-wide (requires `sudo`):
 
 ```sh
 sudo just install
@@ -36,22 +34,13 @@ PREFIX=$HOME/.local just install
 ## Add to Panel
 
 1. Right-click the COSMIC panel → **Panel Settings**
-2. Click **Add Applet** in the panel you want to modify
+2. Click **Add Applet**
 3. Search for **Calenderdot** and click **Add**
 
-The day-number badge will appear in the panel. Click it to open the popover.
-
-If the applet doesn't appear in the list, try restarting the panel:
+Restart the panel if it doesn't appear:
 
 ```sh
 killall cosmic-panel
-```
-
-Or log out and back in. Verify the desktop file is installed:
-
-```sh
-ls -la /usr/share/applications/com.cosmic.calenderdot.desktop
-ls -la /usr/bin/cosmic-calenderdot
 ```
 
 ## Uninstall
@@ -62,7 +51,6 @@ sudo just uninstall
 
 ### Dependencies
 
-- [just](https://github.com/casey/just) — command runner
 - Rust 2021 edition
 - libcosmic (fetched from git during build)
-- Standard COSMIC desktop libraries
+- Evolution Data Server (reads `~/.cache/evolution/calendar/*/cache.db`)

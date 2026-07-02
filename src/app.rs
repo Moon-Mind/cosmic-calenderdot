@@ -1,4 +1,4 @@
-use crate::calendar::CalendarEvent;
+use crate::calendar::{self, CalendarEvent};
 use crate::config::Config;
 use chrono::{Datelike, Local, NaiveDate, Weekday};
 use cosmic::applet::token::subscription::{TokenUpdate, activation_token_subscription};
@@ -9,7 +9,10 @@ use cosmic::prelude::*;
 use cosmic::widget::{self, button, column, container, grid, row, scrollable, text, Space};
 use cosmic::Element;
 use cosmic::iced::{Alignment, Length};
+use std::collections::HashMap;
+use std::path::PathBuf;
 use std::time::Duration;
+use std::time::SystemTime;
 
 mod comic {
     use cosmic::iced::Color;
@@ -30,7 +33,6 @@ mod comic {
     pub const GRID_HEADER: Color = Color::from_rgb(0.663, 0.663, 0.663);
     pub const CARD_BG: Color = Color::from_rgb(0.102, 0.102, 0.110);
     pub const DIMMED_TEXT: Color = CYAN_DIM;
-    pub const EVENT_BLUE: Color = CYAN_BRIGHT;
     pub const SECTION_BG: Color = Color::from_rgb(0.082, 0.082, 0.090);
 }
 
@@ -43,6 +45,7 @@ pub struct AppModel {
     date_today: NaiveDate,
     events: Vec<CalendarEvent>,
     tick_count: u32,
+    cache_db_mtimes: HashMap<PathBuf, SystemTime>,
 }
 
 #[derive(Debug, Clone)]
@@ -81,7 +84,14 @@ impl cosmic::Application for AppModel {
         _flags: Self::Flags,
     ) -> (Self, Task<cosmic::Action<Self::Message>>) {
         let today = Local::now().date_naive();
-        let events = crate::calendar::fetch_events(today, today + chrono::Duration::days(30));
+        let events = calendar::fetch_events(today, today + chrono::Duration::days(30));
+
+        let mut mtimes = HashMap::new();
+        for p in calendar::all_cache_db_paths() {
+            if let Some(m) = calendar::cache_db_modified(&p) {
+                mtimes.insert(p, m);
+            }
+        }
 
         let app = AppModel {
             core,
@@ -95,6 +105,7 @@ impl cosmic::Application for AppModel {
             date_today: today,
             events,
             tick_count: 0,
+            cache_db_mtimes: mtimes,
             ..Default::default()
         };
 
@@ -138,9 +149,20 @@ impl cosmic::Application for AppModel {
         match message {
             Message::Tick => {
                 self.tick_count += 1;
-                if self.tick_count % 60 == 0 {
+                let mut changed = false;
+                for p in calendar::all_cache_db_paths() {
+                    let new_m = calendar::cache_db_modified(&p);
+                    let old_m = self.cache_db_mtimes.get(&p).copied();
+                    if new_m.is_some() && new_m != old_m {
+                        if let Some(m) = new_m {
+                            self.cache_db_mtimes.insert(p.clone(), m);
+                        }
+                        changed = true;
+                    }
+                }
+                if changed || self.tick_count % 60 == 0 {
                     let today = Local::now().date_naive();
-                    self.events = crate::calendar::fetch_events(today, today + chrono::Duration::days(30));
+                    self.events = calendar::fetch_events(today, today + chrono::Duration::days(30));
                 }
             }
             Message::Token(update) => {
@@ -495,12 +517,13 @@ impl AppModel {
     }
 
     fn render_agenda_event<'a>(&self, event: &'a CalendarEvent) -> Element<'a, Message> {
+        let dot_color = event.color;
         let dot = container(Space::new())
             .width(Length::Fixed(8.0))
             .height(Length::Fixed(8.0))
             .class(cosmic::theme::Container::Custom(Box::new(
-                |_: &cosmic::Theme| container::Style {
-                    background: Some(cosmic::iced::Background::Color(comic::EVENT_BLUE)),
+                move |_: &cosmic::Theme| container::Style {
+                    background: Some(cosmic::iced::Background::Color(dot_color)),
                     border: cosmic::iced::Border {
                         radius: 4.0.into(),
                         width: 0.0,
