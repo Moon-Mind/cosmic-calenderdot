@@ -46,6 +46,7 @@ pub struct AppModel {
     events: Vec<CalendarEvent>,
     tick_count: u32,
     cache_db_mtimes: HashMap<PathBuf, SystemTime>,
+    pinned: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -56,10 +57,11 @@ pub enum Message {
     UpdateConfig(Config),
     CalendarPrev,
     CalendarNext,
+    CalendarToday,
     SelectDay(NaiveDate),
     Token(TokenUpdate),
     CreateEvent,
-    OpenNotifications,
+    PinToggle,
     ToggleView,
     OpenSettings,
 }
@@ -106,6 +108,7 @@ impl cosmic::Application for AppModel {
             events,
             tick_count: 0,
             cache_db_mtimes: mtimes,
+            pinned: false,
             ..Default::default()
         };
 
@@ -120,7 +123,8 @@ impl cosmic::Application for AppModel {
         let now = Local::now();
 
         let clock = text::body(now.format("%d.%m., %H:%M").to_string())
-            .size(13);
+            .size(13)
+            .wrapping(cosmic::iced::core::text::Wrapping::None);
 
         self.core
             .applet
@@ -189,6 +193,7 @@ impl cosmic::Application for AppModel {
                         .min_width(320.0)
                         .min_height(300.0)
                         .max_height(650.0);
+                    popup_settings.grab = !self.pinned;
                     get_popup(popup_settings)
                 };
             }
@@ -213,8 +218,27 @@ impl cosmic::Application for AppModel {
             Message::CreateEvent => {
                 tracing::info!("Create event");
             }
-            Message::OpenNotifications => {
-                tracing::info!("Open notifications");
+            Message::PinToggle => {
+                self.pinned = !self.pinned;
+                if let Some(p) = self.popup.take() {
+                    let destroy = destroy_popup(p);
+                    let new_id = Id::unique();
+                    self.popup.replace(new_id);
+                    let mut popup_settings = self.core.applet.get_popup_settings(
+                        self.core.main_window_id().unwrap(),
+                        new_id,
+                        None,
+                        None,
+                        None,
+                    );
+                    popup_settings.positioner.size_limits = Limits::NONE
+                        .max_width(420.0)
+                        .min_width(320.0)
+                        .min_height(300.0)
+                        .max_height(650.0);
+                    popup_settings.grab = !self.pinned;
+                    return Task::batch([destroy, get_popup(popup_settings)]);
+                }
             }
             Message::ToggleView => {
                 tracing::info!("Toggle view");
@@ -232,6 +256,9 @@ impl cosmic::Application for AppModel {
                     self.selected_date = date;
                 }
             }
+            Message::CalendarToday => {
+                self.selected_date = self.date_today;
+            }
         }
         Task::none()
     }
@@ -242,6 +269,43 @@ impl cosmic::Application for AppModel {
 }
 
 impl AppModel {
+    fn events_by_date(&self) -> HashMap<NaiveDate, Vec<(cosmic::iced::Color, bool)>> {
+        let mut map: HashMap<NaiveDate, Vec<(cosmic::iced::Color, bool)>> = HashMap::new();
+        for event in &self.events {
+            let date = event.start_time.map(|t| t.date()).unwrap_or(self.date_today);
+            map.entry(date).or_default().push((event.color, event.all_day));
+        }
+        map
+    }
+
+    fn render_event_dots(items: Vec<(cosmic::iced::Color, bool)>) -> Element<'static, Message> {
+        if items.is_empty() {
+            return Space::new().height(Length::Fixed(0.0)).into();
+        }
+
+        let count = items.len().min(5);
+        let dots: Vec<Element<'static, Message>> = items.iter().take(count).map(|(c, _)| {
+            let dot_color = *c;
+            container(Space::new())
+                .width(Length::Fixed(4.0))
+                .height(Length::Fixed(4.0))
+                .class(cosmic::theme::Container::Custom(Box::new(move |_: &cosmic::Theme| {
+                    container::Style {
+                        background: Some(cosmic::iced::Background::Color(dot_color)),
+                        border: cosmic::iced::Border {
+                            radius: 2.0.into(),
+                            width: 0.0,
+                            color: cosmic::iced::Color::TRANSPARENT,
+                        },
+                        ..Default::default()
+                    }
+                })))
+                .into()
+        }).collect();
+
+        row(dots).spacing(2).into()
+    }
+
     fn render_popup_content(&self) -> Element<'_, Message> {
         let content = column([
             self.render_calendar_grid(),
@@ -271,6 +335,7 @@ impl AppModel {
         let year = self.selected_date.year();
         let month = self.selected_date.month();
         let first_day = crate::calendar::get_calendar_first(year, month, Weekday::Sun);
+        let date_colors = self.events_by_date();
 
         for i in 0..7 {
             let name = match first_day.checked_add_signed(chrono::Duration::days(i)).unwrap().weekday() {
@@ -310,14 +375,18 @@ impl AppModel {
                 (None, comic::DIMMED_TEXT, false)
             };
 
+            let day_items = date_colors.get(&date).cloned().unwrap_or_default();
+            let dots = Self::render_event_dots(day_items);
+
             let content = column([
                 text::body(format!("{}", date.day()))
                     .size(14)
                     .class(cosmic::theme::Text::Color(text_color))
                     .into(),
+                dots,
             ])
             .align_x(Alignment::Center)
-            .spacing(1)
+            .spacing(0)
             .width(Length::Fill);
 
             let btn = button::custom(content)
@@ -410,6 +479,10 @@ impl AppModel {
                 .on_press(Message::CalendarPrev)
                 .class(cosmic::theme::Button::Text)
                 .into(),
+            widget::button::custom(text::body("  \u{25cf}  "))
+                .on_press(Message::CalendarToday)
+                .class(cosmic::theme::Button::Text)
+                .into(),
             widget::button::custom(text::body("  \u{25b6}  "))
                 .on_press(Message::CalendarNext)
                 .class(cosmic::theme::Button::Text)
@@ -442,14 +515,54 @@ impl AppModel {
     }
 
     fn render_toolbar(&self) -> Element<'_, Message> {
-        let buttons = [
+        let pin_icon = if self.pinned { "\u{1f4cc}" } else { "\u{1f4cc}" };
+        let is_pinned = self.pinned;
+
+        let pin_btn = widget::button::custom(text::body(pin_icon).size(16))
+            .on_press(Message::PinToggle)
+            .class(cosmic::theme::Button::Custom {
+                active: Box::new(move |_: bool, _: &cosmic::Theme| {
+                    let mut style = cosmic::widget::button::Style::default();
+                    if is_pinned {
+                        style.background =
+                            Some(cosmic::iced::Background::Color(comic::CARD_BG));
+                        style.text_color = Some(comic::CYAN_BRIGHT);
+                    } else {
+                        style.text_color = Some(comic::TITLE_TEXT);
+                    }
+                    style.border_width = 0.0;
+                    style
+                }),
+                disabled: Box::new(|_: &cosmic::Theme| {
+                    cosmic::widget::button::Style::default()
+                }),
+                hovered: Box::new(move |_: bool, _: &cosmic::Theme| {
+                    let mut style = cosmic::widget::button::Style::default();
+                    style.background =
+                        Some(cosmic::iced::Background::Color(comic::CARD_BG));
+                    style.text_color = Some(comic::CYAN_BRIGHT);
+                    style.border_width = 0.0;
+                    style
+                }),
+                pressed: Box::new(move |_: bool, _: &cosmic::Theme| {
+                    let mut style = cosmic::widget::button::Style::default();
+                    style.background =
+                        Some(cosmic::iced::Background::Color(comic::SECTION_BG));
+                    style.text_color = Some(comic::CYAN_BRIGHT);
+                    style.border_width = 0.0;
+                    style
+                }),
+            })
+            .width(Length::Fixed(36.0))
+            .height(Length::Fixed(36.0));
+
+        let other_icons = [
             ("+", Message::CreateEvent),
-            ("\u{1f514}", Message::OpenNotifications),
             ("\u{1f4cb}", Message::ToggleView),
             ("\u{2699}", Message::OpenSettings),
         ];
 
-        let items: Vec<Element<'_, Message>> = buttons
+        let other_items: Vec<Element<'_, Message>> = other_icons
             .iter()
             .map(|(icon, msg)| {
                 widget::button::custom(text::body(*icon).size(16))
@@ -461,6 +574,9 @@ impl AppModel {
             })
             .collect();
 
+        let mut items: Vec<Element<'_, Message>> = vec![pin_btn.into()];
+        items.extend(other_items);
+
         container(row(items).spacing(4).align_y(Alignment::Center))
             .padding([6, 14])
             .width(Length::Fill)
@@ -468,6 +584,58 @@ impl AppModel {
     }
 
     fn render_agenda(&self) -> Element<'_, Message> {
+        let selected = self.selected_date;
+        let is_today = selected == self.date_today;
+
+        if is_today {
+            return self.render_agenda_all();
+        }
+
+        let day_events: Vec<&CalendarEvent> = self.events
+            .iter()
+            .filter(|e| e.start_time.map_or(false, |t| t.date() == selected))
+            .collect();
+
+        let date_label = format!("{} \u{2022} {}", selected.format("%A"), selected.format("%m/%d/%y"));
+
+        let header = container(
+            text::caption(date_label)
+                .class(cosmic::theme::Text::Color(comic::GRID_HEADER)),
+        )
+        .width(Length::Fill)
+        .padding([6, 14])
+        .class(cosmic::theme::Container::Custom(Box::new(
+            |_: &cosmic::Theme| container::Style {
+                background: Some(cosmic::iced::Background::Color(comic::SECTION_BG)),
+                ..Default::default()
+            },
+        )));
+
+        if day_events.is_empty() {
+            return column([
+                header.into(),
+                container(
+                    text::body("No events")
+                        .size(12)
+                        .class(cosmic::theme::Text::Color(comic::GRID_HEADER)),
+                )
+                .padding([12, 14])
+                .width(Length::Fill)
+                .into(),
+            ])
+            .spacing(0)
+            .into();
+        }
+
+        let mut widgets: Vec<Element<'_, Message>> = vec![header.into()];
+        for event in day_events {
+            widgets.push(self.render_agenda_event(event).into());
+        }
+
+        column(widgets).spacing(0).into()
+    }
+
+    fn render_agenda_all(&self) -> Element<'_, Message> {
         let mut day_groups: Vec<(NaiveDate, Vec<&CalendarEvent>)> = Vec::new();
         for event in &self.events {
             let date = event.start_time.map(|t| t.date()).unwrap_or(self.date_today);
@@ -517,24 +685,44 @@ impl AppModel {
     }
 
     fn render_agenda_event<'a>(&self, event: &'a CalendarEvent) -> Element<'a, Message> {
-        let dot_color = event.color;
-        let dot = container(Space::new())
-            .width(Length::Fixed(8.0))
-            .height(Length::Fixed(8.0))
-            .class(cosmic::theme::Container::Custom(Box::new(
-                move |_: &cosmic::Theme| container::Style {
-                    background: Some(cosmic::iced::Background::Color(dot_color)),
-                    border: cosmic::iced::Border {
-                        radius: 4.0.into(),
-                        width: 0.0,
-                        color: cosmic::iced::Color::TRANSPARENT,
+        let event_color = event.color;
+
+        let dot = if event.all_day {
+            let pill_color = event_color;
+            container(Space::new())
+                .width(Length::Fixed(8.0))
+                .height(Length::Fixed(20.0))
+                .class(cosmic::theme::Container::Custom(Box::new(
+                    move |_: &cosmic::Theme| container::Style {
+                        background: Some(cosmic::iced::Background::Color(pill_color)),
+                        border: cosmic::iced::Border {
+                            radius: 4.0.into(),
+                            width: 0.0,
+                            color: cosmic::iced::Color::TRANSPARENT,
+                        },
+                        ..Default::default()
                     },
-                    ..Default::default()
-                },
-            )));
+                )))
+        } else {
+            let dot_color = event_color;
+            container(Space::new())
+                .width(Length::Fixed(8.0))
+                .height(Length::Fixed(8.0))
+                .class(cosmic::theme::Container::Custom(Box::new(
+                    move |_: &cosmic::Theme| container::Style {
+                        background: Some(cosmic::iced::Background::Color(dot_color)),
+                        border: cosmic::iced::Border {
+                            radius: 4.0.into(),
+                            width: 0.0,
+                            color: cosmic::iced::Color::TRANSPARENT,
+                        },
+                        ..Default::default()
+                    },
+                )))
+        };
 
         let time_str = if event.all_day {
-            String::new()
+            "All Day".to_string()
         } else {
             match (event.start_time, event.end_time) {
                 (Some(s), Some(e)) => {
