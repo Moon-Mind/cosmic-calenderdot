@@ -2,6 +2,14 @@
 
 A calendar applet for the COSMIC desktop with an EDS (Evolution Data Server) backend.
 
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+## todos
+- [ ] add day seltion in mini calender filter all eventfrom the selectetd da
+- [ ] add colo r point for calebder event with event in the mini calender
+
 ## Features
 
 - **Panel clock** — shows `%d.%m., %H:%M` in the panel
